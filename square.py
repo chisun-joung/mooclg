@@ -43,7 +43,7 @@ def move_next_position(position):
     if not left_square and over_square:
         position[1] += square_size
     if left_square and not over_square:
-        position[1] += square_size
+        position[0] += square_size
     if left_square and over_square:
         position[0] = 0
         position[1] = 1
@@ -54,20 +54,19 @@ def put_value(position, value):
     if square[index] == 0:
         square[index] = value
     else:
-        position[1] += 1
+        position[0] += 1
+        position[1] += 2
         index = position[0] + position[1]*square_size
         square[index] = value
 
 
 def square_odd():
-    print("2n+1 Solving")
-    # 첫번째 중앙에 1을 위시
     current_index = square_size//2
     current_value = 1
     square[current_index] = current_value
-    current_position = [current_index//square_size, current_index%square_size]
+    current_position = [current_index%square_size, current_index//square_size]
     max_value = square_size**2
-    while current_value <= max_value:
+    while current_value < max_value:
         current_value += 1
         move_diagonal_left(current_position)
         check_square_out(current_position)
@@ -75,8 +74,32 @@ def square_odd():
         put_value(current_position, current_value)
 
 
+def mask_window(window_index, current_block, block_size,fill_values):
+    block_position = [current_block%block_size, current_block//block_size]
+    start_index = block_position[0]*4 + block_position[1]*4*square_size
+    for position in window_index:
+        current_index = start_index + position[0] + position[1]*square_size
+        square[current_index] = current_index + 1
+        fill_values.pop(fill_values.index(current_index + 1))
+
+
+def fill_value(fill_values):
+    for i in range(square_size**2):
+        if square[i] == 0:
+            square[i] = fill_values.pop(fill_values.index(max(fill_values)))
+
+
 def square_even():
-    print("4n Solving")
+    window_index = [(0, 0), (3, 0), (1, 1), (2, 1), (1, 2), (2, 2), (0, 3), (3, 3)]
+    block_size = square_size//4
+    current_block = 0
+    max_block = block_size**2
+    max_value = square_size**2
+    fill_values = [max_value-i for i in range(max_value**2)]
+    while current_block < max_block:
+        mask_window(window_index, current_block, block_size, fill_values)
+        current_block += 1
+    fill_value(fill_values)
 
 def square_init():
     global square
@@ -85,6 +108,7 @@ def square_init():
 def main():
     loop = True
     while loop:
+        print("------------>")
         value = in_proc()
         if value == 0 :
             loop = False
