@@ -84,7 +84,7 @@ def circular_push_back(n):
     circular_list.append(n)
 
 def circular_erase(index):
-    circular_list.pop(index)
+    return circular_list.pop(index)
 
 def circular_show():
     print("{0}".format(repr(circular_list)))
@@ -109,12 +109,22 @@ def in_proc():
             value = [-1]
     return value[0]
 
-def out_proc():
+def out_proc(extract_list):
     circular_show()
-    print("다 구현 하지 못했습니다 수업 재미 있습니다 ^^;")
+    print(extract_list)
 
 def extraction():
-    pass0
+    global mans, step
+    length = mans
+    count = 1
+    ret = []
+    ret.append(circular_erase(0))
+    length -= 1
+    while count < mans:
+        ret.append(circular_erase(((step-1)*count)%length))
+        count += 1
+        length -= 1
+    return ret
 
 def main():
     loop = True
@@ -127,7 +137,7 @@ def main():
         if ret < 0:
             print("Invalid value")
             continue
-        out_proc()
+        out_proc(extraction())
 
 if __name__ == "__main__":
     main()
