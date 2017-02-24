@@ -118,10 +118,14 @@ def extraction():
     length = mans
     count = 1
     ret = []
-    ret.append(circular_erase(0))
+    index = 0
+    ret.append(circular_erase(index))
     length -= 1
     while count < mans:
-        ret.append(circular_erase(((step-1)*count)%length))
+        index = ((step-1)*count)%length
+        if index == 0:
+            index = length - 1
+        ret.append(circular_erase(index))
         count += 1
         length -= 1
     return ret
